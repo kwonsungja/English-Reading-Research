@@ -10,6 +10,7 @@ st.set_page_config(page_title="APP Text Reading 2", page_icon="📘", layout="wi
 
 st.markdown("""
 <style>
+/* Sidebar */
 section[data-testid="stSidebar"] a,
 section[data-testid="stSidebar"] a span,
 section[data-testid="stSidebar"] a p {
@@ -17,7 +18,7 @@ section[data-testid="stSidebar"] a p {
     font-weight: 500 !important;
 }
 
-/* Reading Text */
+/* PC Reading Text */
 .reading-text {
     font-size: 21px !important;
     line-height: 1.9 !important;
@@ -26,10 +27,53 @@ section[data-testid="stSidebar"] a p {
     text-justify: inter-word;
 }
 
-/* Paragraph Spacing */
+.reading-text p {
+    margin-bottom: 18px !important;
+}
+
+st.markdown("""
+<style>
+/* Sidebar */
+section[data-testid="stSidebar"] a,
+section[data-testid="stSidebar"] a span,
+section[data-testid="stSidebar"] a p {
+    font-size: 18px !important;
+    font-weight: 500 !important;
+}
+
+/* PC Reading Text */
+.reading-text {
+    font-size: 21px !important;
+    line-height: 1.9 !important;
+    color: #333 !important;
+    text-align: justify !important;
+    text-justify: inter-word;
+}
+
+/* PC Paragraph Spacing */
 .reading-text p {
     margin-bottom: 18px !important;
     text-align: justify !important;
+}
+
+/* Smartphone */
+@media (max-width: 768px) {
+    .reading-text {
+        font-size: 19px !important;
+        line-height: 1.8 !important;
+        text-align: left !important;
+    }
+
+    .reading-text p {
+        margin-bottom: 16px !important;
+        text-align: left !important;
+    }
+
+    div.stButton > button {
+        width: 100% !important;
+        min-height: 48px !important;
+        font-size: 18px !important;
+    }
 }
 </style>
 """, unsafe_allow_html=True)
