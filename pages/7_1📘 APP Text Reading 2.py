@@ -54,4 +54,3 @@ st.subheader("💬 Reflection")
 reflection = st.text_area("오늘 본문에서 새롭게 배운 표현이나 내용을 적어보세요.", height=120, key=f"reflection_{lesson_key}")
 if reflection.strip():
     st.success("좋아요. 본문 읽기와 어휘 학습이 잘 연결되고 있어요.")
-
