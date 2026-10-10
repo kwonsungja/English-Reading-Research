@@ -27,29 +27,6 @@ section[data-testid="stSidebar"] a p {
     text-justify: inter-word;
 }
 
-.reading-text p {
-    margin-bottom: 18px !important;
-}
-
-st.markdown("""
-<style>
-/* Sidebar */
-section[data-testid="stSidebar"] a,
-section[data-testid="stSidebar"] a span,
-section[data-testid="stSidebar"] a p {
-    font-size: 18px !important;
-    font-weight: 500 !important;
-}
-
-/* PC Reading Text */
-.reading-text {
-    font-size: 21px !important;
-    line-height: 1.9 !important;
-    color: #333 !important;
-    text-align: justify !important;
-    text-justify: inter-word;
-}
-
 /* PC Paragraph Spacing */
 .reading-text p {
     margin-bottom: 18px !important;
@@ -77,6 +54,7 @@ section[data-testid="stSidebar"] a p {
 }
 </style>
 """, unsafe_allow_html=True)
+
 st.markdown("""
 <h1 style="text-align:center;font-size:36px;margin-bottom:5px;">📘 APP Text Reading 2</h1>
 <p style="text-align:center;font-size:18px;color:#555;">미래엔 영어Ⅱ · Main Reading &amp; Read More<br>
