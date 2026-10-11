@@ -18,7 +18,7 @@ st.set_page_config(
 )
 
 # =====================================================
-# 2. CSS - Flashcard Design
+# 2. CSS
 # =====================================================
 
 st.markdown("""
@@ -45,12 +45,26 @@ section[data-testid="stSidebar"] a p {
     background-color: #E8F5E9;
     border: 2px solid #A5D6A7;
     border-radius: 16px;
-    padding: 20px;
-    min-height: 260px;
+
+    padding: 18px;
+
+    height: 330px;
+    width: 100%;
+
+    box-sizing: border-box;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
     text-align: center;
+
+    overflow: hidden;
+
     box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+
     margin-bottom: 10px;
-    overflow-wrap: anywhere;
 }
 
 /* Front */
@@ -58,43 +72,64 @@ section[data-testid="stSidebar"] a p {
     font-size: 25px;
     font-weight: 700;
     color: #1B5E20;
-    margin-top: 70px;
+
+    overflow-wrap: anywhere;
 }
 
 /* Back */
+.card-back {
+    width: 100%;
+    text-align: left;
+
+    overflow-wrap: anywhere;
+    word-break: normal;
+}
+
+/* Word */
 .card-word {
-    font-size: 24px;
+    font-size: 22px;
     font-weight: 700;
     color: #1B5E20;
-    margin-bottom: 12px;
+
+    margin-bottom: 8px;
 }
 
+/* Meaning */
 .card-meaning {
-    font-size: 19px;
+    font-size: 17px;
     color: #333;
-    margin-bottom: 12px;
+
+    margin-bottom: 8px;
+    line-height: 1.5;
 }
 
+/* Definition */
 .card-definition {
-    font-size: 17px;
+    font-size: 15px;
     color: #444;
-    margin-bottom: 12px;
-    line-height: 1.6;
+
+    margin-bottom: 8px;
+    line-height: 1.5;
 }
 
+/* Example */
 .card-example {
-    font-size: 17px;
+    font-size: 15px;
     color: #333;
-    line-height: 1.6;
-    margin-bottom: 10px;
+
+    margin-bottom: 8px;
+    line-height: 1.5;
 }
 
+/* Translation */
 .card-translation {
-    font-size: 16px;
+    font-size: 14px;
     color: #555;
-    line-height: 1.6;
+
+    line-height: 1.5;
 }
 
+/* Highlight */
 .highlight {
     color: #D32F2F;
     font-weight: 700;
@@ -115,30 +150,29 @@ div.stButton > button {
     }
 
     .flashcard {
-        min-height: 220px;
+        height: 350px;
         padding: 15px;
     }
 
     .card-front {
-        font-size: 22px;
-        margin-top: 55px;
+        font-size: 23px;
     }
 
     .card-word {
-        font-size: 21px;
+        font-size: 20px;
     }
 
     .card-meaning {
-        font-size: 18px;
+        font-size: 17px;
     }
 
     .card-definition,
     .card-example {
-        font-size: 16px;
+        font-size: 15px;
     }
 
     .card-translation {
-        font-size: 15px;
+        font-size: 14px;
     }
 }
 
@@ -165,7 +199,10 @@ def load_data():
         st.error("Vocabulary CSV file not found.")
         st.stop()
 
-    df = pd.read_csv(CSV_PATH, encoding="utf-8-sig")
+    df = pd.read_csv(
+        CSV_PATH,
+        encoding="utf-8-sig"
+    )
 
     required_columns = [
         "lesson",
@@ -191,7 +228,9 @@ def load_data():
         errors="coerce"
     )
 
-    df = df.dropna(subset=["lesson", "word"])
+    df = df.dropna(
+        subset=["lesson", "word"]
+    )
 
     df["lesson"] = df["lesson"].astype(int)
 
@@ -205,7 +244,11 @@ def load_data():
     ]
 
     for col in text_columns:
-        df[col] = df[col].fillna("").astype(str)
+        df[col] = (
+            df[col]
+            .fillna("")
+            .astype(str)
+        )
 
     return df.reset_index(drop=True)
 
@@ -233,10 +276,13 @@ def generate_audio(text):
 
 
 # =====================================================
-# 5. Highlight Vocabulary in Example
+# 5. Highlight Vocabulary
 # =====================================================
 
 def highlight_word(sentence, word):
+
+    if not sentence:
+        return ""
 
     safe_sentence = html.escape(sentence)
 
@@ -246,7 +292,7 @@ def highlight_word(sentence, word):
     safe_word = html.escape(word)
 
     pattern = re.compile(
-        rf"(?<!\\w){re.escape(safe_word)}(?!\\w)",
+        rf"(?<!\w){re.escape(safe_word)}(?!\w)",
         re.IGNORECASE
     )
 
@@ -298,7 +344,9 @@ st.divider()
 # 8. Lesson Selection
 # =====================================================
 
-lesson_options = sorted(df["lesson"].unique())
+lesson_options = sorted(
+    df["lesson"].unique()
+)
 
 lesson = st.selectbox(
     "📘 Select Lesson",
@@ -313,11 +361,15 @@ if lesson is None:
     st.stop()
 
 
-lesson_df = df[
-    df["lesson"] == lesson
-].copy().reset_index(drop=True)
+lesson_df = (
+    df[df["lesson"] == lesson]
+    .copy()
+    .reset_index(drop=True)
+)
 
-lesson_title = lesson_df["lesson_title"].iloc[0]
+lesson_title = lesson_df[
+    "lesson_title"
+].iloc[0]
 
 st.subheader(
     f"Lesson {lesson}: {lesson_title}"
@@ -346,7 +398,9 @@ if st.session_state.flashcard_lesson != lesson:
 
 total_words = len(lesson_df)
 
-st.write(f"📚 Total Vocabulary: **{total_words} words**")
+st.write(
+    f"📚 Total Vocabulary: **{total_words} words**"
+)
 
 control1, control2, control3 = st.columns(3)
 
@@ -402,8 +456,10 @@ if favorites_only:
 
     order = [
         i for i in order
-        if (lesson, lesson_df.iloc[i]["word"])
-        in st.session_state.flashcard_favorites
+        if (
+            lesson,
+            lesson_df.iloc[i]["word"]
+        ) in st.session_state.flashcard_favorites
     ]
 
 
@@ -447,9 +503,11 @@ st.divider()
 # 13. Display Flashcards
 # =====================================================
 
-# Streamlit columns: 4 cards per row
-
-for row_start in range(0, len(current_cards), 4):
+for row_start in range(
+    0,
+    len(current_cards),
+    4
+):
 
     row_indices = current_cards[
         row_start:row_start + 4
@@ -459,7 +517,10 @@ for row_start in range(0, len(current_cards), 4):
         len(row_indices)
     )
 
-    for col, card_index in zip(cols, row_indices):
+    for col, card_index in zip(
+        cols,
+        row_indices
+    ):
 
         row = lesson_df.iloc[card_index]
 
@@ -471,28 +532,37 @@ for row_start in range(0, len(current_cards), 4):
 
         card_key = f"{lesson}_{card_index}"
 
-        flipped = st.session_state.flashcard_flipped.get(
-            card_key,
-            False
+        flipped = (
+            st.session_state.flashcard_flipped.get(
+                card_key,
+                False
+            )
         )
 
-        favorite_key = (lesson, word)
+        favorite_key = (
+            lesson,
+            word
+        )
 
         with col:
 
             # ---------------------------------
-            # Card Front / Back
+            # Card Front
             # ---------------------------------
 
             if not flipped:
 
-                card_html = f"""
-                <div class="flashcard">
-                    <div class="card-front">
-                        {html.escape(word)}
-                    </div>
-                </div>
-                """
+                card_html = (
+                    '<div class="flashcard">'
+                    '<div class="card-front">'
+                    f'{html.escape(word)}'
+                    '</div>'
+                    '</div>'
+                )
+
+            # ---------------------------------
+            # Card Back
+            # ---------------------------------
 
             else:
 
@@ -501,33 +571,35 @@ for row_start in range(0, len(current_cards), 4):
                     word
                 )
 
-                card_html = f"""
-                <div class="flashcard">
+                card_html = (
+                    '<div class="flashcard">'
+                    '<div class="card-back">'
 
-                    <div class="card-word">
-                        {html.escape(word)}
-                    </div>
+                    '<div class="card-word">'
+                    f'{html.escape(word)}'
+                    '</div>'
 
-                    <div class="card-meaning">
-                        {html.escape(meaning)}
-                    </div>
+                    '<div class="card-meaning">'
+                    f'{html.escape(meaning)}'
+                    '</div>'
 
-                    <div class="card-definition">
-                        <b>Definition</b><br>
-                        {html.escape(definition)}
-                    </div>
+                    '<div class="card-definition">'
+                    '<b>English Definition</b><br>'
+                    f'{html.escape(definition)}'
+                    '</div>'
 
-                    <div class="card-example">
-                        <b>Example</b><br>
-                        {highlighted_example}
-                    </div>
+                    '<div class="card-example">'
+                    '<b>Example</b><br>'
+                    f'{highlighted_example}'
+                    '</div>'
 
-                    <div class="card-translation">
-                        {html.escape(example_ko)}
-                    </div>
+                    '<div class="card-translation">'
+                    f'{html.escape(example_ko)}'
+                    '</div>'
 
-                </div>
-                """
+                    '</div>'
+                    '</div>'
+                )
 
             st.markdown(
                 card_html,
@@ -589,7 +661,9 @@ for row_start in range(0, len(current_cards), 4):
             # Pronunciation
             # ---------------------------------
 
-            with st.expander("🔊 Pronunciation"):
+            with st.expander(
+                "🔊 Pronunciation"
+            ):
 
                 if st.button(
                     "▶ Play",
@@ -599,7 +673,9 @@ for row_start in range(0, len(current_cards), 4):
 
                     try:
 
-                        audio_bytes = generate_audio(word)
+                        audio_bytes = generate_audio(
+                            word
+                        )
 
                         st.audio(
                             audio_bytes,
@@ -621,7 +697,9 @@ for row_start in range(0, len(current_cards), 4):
 
 st.divider()
 
-nav1, nav2, nav3 = st.columns([1, 2, 1])
+nav1, nav2, nav3 = st.columns(
+    [1, 2, 1]
+)
 
 with nav1:
 
@@ -656,7 +734,9 @@ with nav3:
 
     if st.button(
         "Next ➡",
-        disabled=(page >= total_pages - 1),
+        disabled=(
+            page >= total_pages - 1
+        ),
         use_container_width=True
     ):
 
